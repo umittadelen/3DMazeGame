@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class MazeGenerator : MonoBehaviour
@@ -9,18 +8,19 @@ public class MazeGenerator : MonoBehaviour
     private MazeCell _mazeCellPrefab;
 
     [SerializeField]
-    private int _mazeWidth = 10;
+    private int _mazeWidth = 30;
 
     [SerializeField]
-    private int _mazeDepth = 10;
+    private int _mazeDepth = 30;
 
     [SerializeField]
-    private int _mazeHeight = 10;
+    private int _mazeHeight = 30;
 
     private MazeCell[,,] _mazeGrid;
 
     void Start()
     {
+        Debug.Log($"Initializing maze grid with dimensions: {_mazeWidth}x{_mazeHeight}x{_mazeDepth}");
         _mazeGrid = new MazeCell[_mazeWidth, _mazeHeight, _mazeDepth];
 
         for (int x = 0; x < _mazeWidth; x++)
@@ -30,144 +30,151 @@ public class MazeGenerator : MonoBehaviour
                 for (int z = 0; z < _mazeDepth; z++)
                 {
                     _mazeGrid[x, y, z] = Instantiate(_mazeCellPrefab, new Vector3(x, y, z), Quaternion.identity);
+                    Debug.Log($"Created MazeCell at position ({x}, {y}, {z})");
                 }
             }
         }
 
-        GenerateMaze(null, _mazeGrid[0, 0, 0]);
-
-        ActivateFurthestEndBlock();
+        Debug.Log("Starting maze generation...");
+        GenerateMaze(_mazeGrid[0, 0, 0]);
     }
 
-    private void GenerateMaze(MazeCell previousCell, MazeCell currentCell)
+    private void GenerateMaze(MazeCell startCell)
     {
-        currentCell.Visit();
-        ClearWalls(previousCell, currentCell);
+        Debug.Log("Generating maze...");
+        Stack<MazeCell> stack = new Stack<MazeCell>();
+        stack.Push(startCell);
 
-        MazeCell nextCell;
+        MazeCell longestPathCell = startCell;
+        int maxDepth = 0;
 
-        do
+        Dictionary<MazeCell, int> cellDepths = new Dictionary<MazeCell, int>();
+        cellDepths[startCell] = 0;
+
+        while (stack.Count > 0)
         {
-            nextCell = GetNextUnvisitedCell(currentCell);
+            MazeCell currentCell = stack.Peek();
+            currentCell.Visit();
+            Debug.Log($"Visiting cell at position {currentCell.transform.position}");
+
+            MazeCell nextCell = GetNextUnvisitedCell(currentCell);
 
             if (nextCell != null)
             {
-                GenerateMaze(currentCell, nextCell);
+                Debug.Log($"Moving to next cell at position {nextCell.transform.position}");
+                ClearWalls(currentCell, nextCell);
+                stack.Push(nextCell);
+
+                int currentDepth = cellDepths[currentCell] + 1;
+                cellDepths[nextCell] = currentDepth;
+
+                if (currentDepth > maxDepth)
+                {
+                    maxDepth = currentDepth;
+                    longestPathCell = nextCell;
+                    Debug.Log($"New longest path found with depth {maxDepth} at cell {longestPathCell.transform.position}");
+                }
             }
-        } while (nextCell != null);
+            else
+            {
+                Debug.Log($"Backtracking from cell at position {currentCell.transform.position}");
+                stack.Pop();
+            }
+        }
+
+        Debug.Log($"Maze generation complete. Longest path ends at {longestPathCell.transform.position} with depth {maxDepth}");
+        longestPathCell.ActivateEndBlock();
     }
 
     private MazeCell GetNextUnvisitedCell(MazeCell currentCell)
     {
         var unvisitedCells = GetUnvisitedCells(currentCell);
 
-        return unvisitedCells.OrderBy(_ => Random.Range(1, 10)).FirstOrDefault();
+        if (unvisitedCells.Count > 0)
+        {
+            Debug.Log($"Found {unvisitedCells.Count} unvisited neighbors for cell at position {currentCell.transform.position}");
+            return unvisitedCells[Random.Range(0, unvisitedCells.Count)];
+        }
+
+        Debug.Log($"No unvisited neighbors for cell at position {currentCell.transform.position}");
+        return null;
     }
 
-    private IEnumerable<MazeCell> GetUnvisitedCells(MazeCell currentCell)
+    private List<MazeCell> GetUnvisitedCells(MazeCell currentCell)
     {
+        List<MazeCell> unvisitedCells = new List<MazeCell>();
+
         int x = (int)currentCell.transform.position.x;
         int y = (int)currentCell.transform.position.y;
         int z = (int)currentCell.transform.position.z;
 
-        if (x + 1 < _mazeWidth)
+        if (x + 1 < _mazeWidth && !_mazeGrid[x + 1, y, z].IsVisited)
         {
-            var cellToRight = _mazeGrid[x + 1, y, z];
-            if (!cellToRight.IsVisited) yield return cellToRight;
+            unvisitedCells.Add(_mazeGrid[x + 1, y, z]);
         }
 
-        if (x - 1 >= 0)
+        if (x - 1 >= 0 && !_mazeGrid[x - 1, y, z].IsVisited)
         {
-            var cellToLeft = _mazeGrid[x - 1, y, z];
-            if (!cellToLeft.IsVisited) yield return cellToLeft;
+            unvisitedCells.Add(_mazeGrid[x - 1, y, z]);
         }
 
-        if (y + 1 < _mazeHeight)
+        if (y + 1 < _mazeHeight && !_mazeGrid[x, y + 1, z].IsVisited)
         {
-            var cellAbove = _mazeGrid[x, y + 1, z];
-            if (!cellAbove.IsVisited) yield return cellAbove;
+            unvisitedCells.Add(_mazeGrid[x, y + 1, z]);
         }
 
-        if (y - 1 >= 0)
+        if (y - 1 >= 0 && !_mazeGrid[x, y - 1, z].IsVisited)
         {
-            var cellBelow = _mazeGrid[x, y - 1, z];
-            if (!cellBelow.IsVisited) yield return cellBelow;
+            unvisitedCells.Add(_mazeGrid[x, y - 1, z]);
         }
 
-        if (z + 1 < _mazeDepth)
+        if (z + 1 < _mazeDepth && !_mazeGrid[x, y, z + 1].IsVisited)
         {
-            var cellToFront = _mazeGrid[x, y, z + 1];
-            if (!cellToFront.IsVisited) yield return cellToFront;
+            unvisitedCells.Add(_mazeGrid[x, y, z + 1]);
         }
 
-        if (z - 1 >= 0)
+        if (z - 1 >= 0 && !_mazeGrid[x, y, z - 1].IsVisited)
         {
-            var cellToBack = _mazeGrid[x, y, z - 1];
-            if (!cellToBack.IsVisited) yield return cellToBack;
+            unvisitedCells.Add(_mazeGrid[x, y, z - 1]);
         }
+
+        return unvisitedCells;
     }
 
-    private void ClearWalls(MazeCell previousCell, MazeCell currentCell)
+    private void ClearWalls(MazeCell currentCell, MazeCell nextCell)
     {
-        if (previousCell == null) return;
+        Vector3 direction = nextCell.transform.position - currentCell.transform.position;
+        Debug.Log($"Clearing walls between cells at {currentCell.transform.position} and {nextCell.transform.position}");
 
-        if (previousCell.transform.position.x < currentCell.transform.position.x)
+        if (direction.x > 0)
         {
-            previousCell.ClearRightWall();
-            currentCell.ClearLeftWall();
-        }
-        else if (previousCell.transform.position.x > currentCell.transform.position.x)
-        {
-            previousCell.ClearLeftWall();
             currentCell.ClearRightWall();
+            nextCell.ClearLeftWall();
         }
-        else if (previousCell.transform.position.y < currentCell.transform.position.y)
+        else if (direction.x < 0)
         {
-            previousCell.ClearTopWall();
-            currentCell.ClearDownWall();
+            currentCell.ClearLeftWall();
+            nextCell.ClearRightWall();
         }
-        else if (previousCell.transform.position.y > currentCell.transform.position.y)
+        else if (direction.y > 0)
         {
-            previousCell.ClearDownWall();
             currentCell.ClearTopWall();
+            nextCell.ClearDownWall();
         }
-        else if (previousCell.transform.position.z < currentCell.transform.position.z)
+        else if (direction.y < 0)
         {
-            previousCell.ClearFrontWall();
-            currentCell.ClearBackWall();
+            currentCell.ClearDownWall();
+            nextCell.ClearTopWall();
         }
-        else if (previousCell.transform.position.z > currentCell.transform.position.z)
+        else if (direction.z > 0)
         {
-            previousCell.ClearBackWall();
             currentCell.ClearFrontWall();
+            nextCell.ClearBackWall();
         }
-    }
-
-    private void ActivateFurthestEndBlock()
-    {
-        var visitedCells = new List<MazeCell>();
-        var stack = new Stack<MazeCell>();
-        var startCell = _mazeGrid[0, 0, 0];
-        stack.Push(startCell);
-
-        MazeCell furthestCell = startCell;
-
-        while (stack.Count > 0)
+        else if (direction.z < 0)
         {
-            var currentCell = stack.Pop();
-
-            if (!visitedCells.Contains(currentCell))
-            {
-                visitedCells.Add(currentCell);
-                furthestCell = currentCell;
-
-                foreach (var neighbor in GetUnvisitedCells(currentCell))
-                {
-                    stack.Push(neighbor);
-                }
-            }
+            currentCell.ClearBackWall();
+            nextCell.ClearFrontWall();
         }
-
-        furthestCell.ActivateEndBlock();
     }
 }
