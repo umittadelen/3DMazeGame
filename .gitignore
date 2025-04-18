@@ -1,0 +1,39 @@
+# 💾 Unity specific
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+
+# 🧠 Auto-generated
+UserSettings/
+MemoryCaptures/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+
+# 🌐 VS Code / JetBrains
+.vscode/
+.idea/
+*.code-workspace
+
+# 🔍 Thumbnails + crash stuff
+*.bak
+*.old
+*.orig
+*.log
+*.stacktrace
+*.DS_Store
+
+# 🌍 Unity Cloud build
+.cloud/
+
+# 🌟 Crash dumps
+*.dmp
