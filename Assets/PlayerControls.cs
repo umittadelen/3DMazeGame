@@ -1,6 +1,7 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerControls : MonoBehaviour
+public class PlayerControls : NetworkBehaviour
 {
     [Header("Movement")]
     public float moveSpeed;
@@ -37,11 +38,15 @@ public class PlayerControls : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+
+        // Only do owner-only setup stuff after this
+        if (!IsOwner) return;
         exitingSlope = false;
     }
 
     private void Update()
     {
+        if (!IsOwner) return;
         // ground check
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
 
@@ -56,6 +61,7 @@ public class PlayerControls : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!IsOwner) return;
         MovePlayer();
     }
 

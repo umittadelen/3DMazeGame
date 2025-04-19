@@ -26,6 +26,8 @@ public class MazeCell : MonoBehaviour
     [SerializeField]
     private GameObject _endBlock;
 
+    public int cellDist = 0;
+
     public bool IsVisited { get; private set; }
 
     public void Visit()

@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 4343875191410908278}
   - component: {fileID: 7798927581080948942}
   - component: {fileID: 3094341294090043322}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: FrontWall
   m_TagString: MazeWall
   m_Icon: {fileID: 0}
@@ -179,7 +179,7 @@ GameObject:
   - component: {fileID: 7083977549873553031}
   - component: {fileID: 5668668868997613604}
   - component: {fileID: 2472644738729334840}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: LeftWall
   m_TagString: MazeWall
   m_Icon: {fileID: 0}
@@ -601,7 +601,7 @@ GameObject:
   - component: {fileID: 5515264425169786354}
   - component: {fileID: 8267568587410496484}
   - component: {fileID: 6855484864095417501}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: RightWall
   m_TagString: MazeWall
   m_Icon: {fileID: 0}
@@ -732,6 +732,7 @@ MonoBehaviour:
   _downWall: {fileID: 4187097886820141961}
   _unvisitedBlock: {fileID: 6086807625772196901}
   _endBlock: {fileID: 7473454354602057149}
+  cellDist: 0
 --- !u!1 &6086807625772196901
 GameObject:
   m_ObjectHideFlags: 0
@@ -775,7 +776,7 @@ GameObject:
   - component: {fileID: 224025142120150652}
   - component: {fileID: 2396940793729124739}
   - component: {fileID: 1239812625160980303}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Graphics
   m_TagString: MazeWall
   m_Icon: {fileID: 0}
@@ -1029,7 +1030,7 @@ GameObject:
   - component: {fileID: 8530766792650675469}
   - component: {fileID: 7140014155182487867}
   - component: {fileID: 2170711458420152417}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: TopWall
   m_TagString: MazeWall
   m_Icon: {fileID: 0}
@@ -1283,7 +1284,7 @@ GameObject:
   - component: {fileID: 217123495771361728}
   - component: {fileID: 1092612699755350910}
   - component: {fileID: 3863888137019420641}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: BackWall
   m_TagString: MazeWall
   m_Icon: {fileID: 0}
