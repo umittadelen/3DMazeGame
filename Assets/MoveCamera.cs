@@ -19,7 +19,7 @@ public class MouseLook : NetworkBehaviour
     {
         if (!IsOwner)
         {
-            gameObject.SetActive(false); // disables camera + script for non-owners 🎥❌
+            gameObject.SetActive(false);
             return;
         }
 

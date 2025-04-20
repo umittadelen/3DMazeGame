@@ -184,8 +184,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   orientation: {fileID: 719423483696936802}
   cameraFollowTarget: {fileID: 2356041464489389703}
-  sensitivityX: 100
-  sensitivityY: 100
+  sensitivityX: 200
+  sensitivityY: 200
   maxPitch: 80
   minPitch: -80
 --- !u!1 &2204057126042085390
