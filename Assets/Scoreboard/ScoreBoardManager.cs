@@ -82,7 +82,6 @@ public class ScoreBoardManager : MonoBehaviour
         }
 
         instance.UpdatePlayerScoreServerRpc(clientID, score);
-        instance.UpdatePlayerScoreClientRpc(clientID, score);
     }
 
     [ServerRpc(RequireOwnership = false)]
