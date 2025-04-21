@@ -948,6 +948,7 @@ GameObject:
   - component: {fileID: 5229619242913439521}
   - component: {fileID: 7892217867147134780}
   - component: {fileID: 7946058968907736577}
+  - component: {fileID: 9015258505488640794}
   m_Layer: 0
   m_Name: EndBlock
   m_TagString: MazeEndBlock
@@ -1019,6 +1020,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &9015258505488640794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7473454354602057149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f716caa6c1519954697830fd8919ff3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &8005076787679532644
 GameObject:
   m_ObjectHideFlags: 0

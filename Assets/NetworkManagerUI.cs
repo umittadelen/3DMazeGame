@@ -8,19 +8,23 @@ using System.Net.Sockets;
 
 public class NetworkManagerUI : MonoBehaviour
 {
-    [SerializeField] private GameObject canvasRoot; // << drag your whole UI Canvas here
+    [SerializeField] private GameObject canvasRoot;
+    [SerializeField] private GameObject scoreboard;
     [SerializeField] private Button hostBtn;
     [SerializeField] private Button clientBtn;
     [SerializeField] private Button exitBtn;
     [SerializeField] private TMP_InputField destCodeInput;
     [SerializeField] private TMP_Text myCodeText;
-    [SerializeField] private TMP_Text statusText; // Display error or status messages here
+    [SerializeField] private TMP_Text statusText;
     [SerializeField] private ushort startingPort = 7777;
 
     private bool isConnected = false;
 
     private void Awake()
     {
+        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
+
         hostBtn.onClick.AddListener(() =>
         {
             string ip = GetLocalIP();
@@ -82,6 +86,7 @@ public class NetworkManagerUI : MonoBehaviour
             if (isConnected)
             {
                 NetworkManager.Singleton.Shutdown();
+                ScoreBoardManager.PlayerLeft(NetworkManager.Singleton.LocalClientId.ToString());
                 isConnected = false;
                 statusText.text = "Disconnected from the network.";
             }
@@ -89,6 +94,26 @@ public class NetworkManagerUI : MonoBehaviour
         });
 
         ShowUI();
+    }
+
+    private void OnDestroy()
+    {
+        // Unsubscribe from network events
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+        }
+    }
+
+    private void OnClientConnected(ulong clientId)
+    {
+        ScoreBoardManager.PlayerJoined(clientId.ToString());
+    }
+
+    private void OnClientDisconnected(ulong clientId)
+    {
+        ScoreBoardManager.PlayerLeft(clientId.ToString());
     }
 
     private void Update()
@@ -104,6 +129,15 @@ public class NetworkManagerUI : MonoBehaviour
             else
             {
                 ShowUI();
+            }
+            bool scoreboardVisible = scoreboard.activeSelf;
+            if (scoreboardVisible)
+            {
+                scoreboard.SetActive(false);
+            }
+            else
+            {
+                scoreboard.SetActive(true);
             }
         }
     }

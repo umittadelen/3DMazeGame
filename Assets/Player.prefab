@@ -202,7 +202,7 @@ GameObject:
   - component: {fileID: 7389112455287469978}
   - component: {fileID: 2503815243286868107}
   - component: {fileID: 727017301468045597}
-  - component: {fileID: 7297187648904218082}
+  - component: {fileID: 2561895710909486709}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -370,7 +370,7 @@ MonoBehaviour:
   UseRigidBodyForMotion: 0
   AutoUpdateKinematicState: 1
   AutoSetKinematicOnDespawn: 1
---- !u!136 &7297187648904218082
+--- !u!136 &2561895710909486709
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -390,7 +390,7 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 2
+  m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2435666357222315993
